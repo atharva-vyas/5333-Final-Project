@@ -1,0 +1,62 @@
+# SSL Certificates and Keys
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+ssl/
+*.cer
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+env/
+
+# Authelia Secrets & Database
+authelia/db.sqlite3
+authelia/secretsRaw
+authelia/notification.txt
+authelia/configuration.yml
+
+# Redis
+redis/dump.rdb
+*.rdb
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Docker
+.dockerignore
+
+# Logs
+*.log
+logs/
+*.logs
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
