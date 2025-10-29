@@ -50,7 +50,7 @@ services:
     volumes:
       - ./authelia:/config
     ports:
-      - 9091:9091
+      - 9091
     restart: unless-stopped
     environment:
       - PUID=1000

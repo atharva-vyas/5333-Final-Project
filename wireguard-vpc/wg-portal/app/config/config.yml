@@ -1,0 +1,12 @@
+core:
+  admin_user: test@wg-portal.local
+  admin_password: fUDbb_)+6pnX&jWfUDbb_)+6pnX&jW
+
+web:
+  #external_url: http://10.13.13.1:8888
+  external_url: http://10.11.12.1:8888
+  #external_url: http://131.186.6.60:8888
+  request_logging: true
+
+advanced:
+  config_storage_path: "/etc/wireguard"

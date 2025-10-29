@@ -1,0 +1,75 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    networks:
+      webnet:
+        ipv4_address: 172.20.0.2
+
+  never-idle:
+    build:
+      context: .
+      dockerfile: neverIdle/Dockerfile
+    container_name: neverIdle
+    privileged: true
+    restart: unless-stopped
+    networks:
+      webnet:
+        ipv4_address: 172.20.0.3
+
+  wireguard:
+    build:
+      context: .
+      dockerfile: wireguard/Dockerfile
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - "51820:51820/udp"
+      - "8888:8888/tcp" # Notice that the port of the wg-portal web UI is exposed in the wireguard container.
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PEERS=1
+      - LOG_CONFS=true
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      webnet:
+        ipv4_address: 172.20.0.4
+    volumes:
+      - ./wireguard/usr/local/bin/start-wireguard.sh:/usr/local/bin/start-wireguard.sh
+        #- ./wireguard/etc/wireguard:/etc/wireguard
+
+  wg-portal:
+    build:
+      context: .
+      dockerfile: wg-portal/Dockerfile
+    image: wgportal/wg-portal:v2
+    container_name: wg-portal
+    cap_add:
+      - NET_ADMIN
+    network_mode: "service:wireguard" # So we ensure to stay on the same network as the wireguard container.
+    restart: unless-stopped
+    depends_on:
+      - wireguard
+    volumes:
+      - ./wg-portal/app/data:/app/data
+      - ./wg-portal/app/config:/app/config
+      - ./wireguard/etc/wireguard:/etc/wireguard
+
+networks:
+  webnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
